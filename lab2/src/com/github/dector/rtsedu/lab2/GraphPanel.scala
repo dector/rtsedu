@@ -18,6 +18,9 @@ class GraphPanel(val countFunction: () => Int) extends Panel {
 	final val MinY = -50
 	final val MaxY = 50
 
+	final val AxisTaleLength = 15
+	final val AxisTaleHeight = AxisTaleLength / 2
+
 	val padding = (PaddingTop, PaddingRight, PaddingBottom, PaddingLeft)
 
 	val xValuesBounds = (MinX, MaxX)
@@ -25,13 +28,19 @@ class GraphPanel(val countFunction: () => Int) extends Panel {
 
 	override def paintComponent(g: Graphics2D) {
 		// Draw axis
-		val xAxisLength = size.width - padding._2 - padding._4
-		val yAxisLength = size.height - padding._1 - padding._3
+		val xAxisLength = size.width - padding._2 - padding._4 - 2*AxisTaleLength
+		val yAxisLength = size.height - padding._1 - padding._3 - 2*AxisTaleLength
 		val zeroPosition = new Point(
-			-xValuesBounds._1 * xAxisLength / (xValuesBounds._2 - xValuesBounds._1),
-			-yValuesBounds._1 * yAxisLength / (yValuesBounds._2 - yValuesBounds._1))
-		drawLine(g, 0, zeroPosition.y, xAxisLength, zeroPosition.y)
-		drawLine(g, zeroPosition.x, 0, zeroPosition.x, yAxisLength)
+			-xValuesBounds._1 * xAxisLength / (xValuesBounds._2 - xValuesBounds._1) + AxisTaleLength,
+			-yValuesBounds._1 * yAxisLength / (yValuesBounds._2 - yValuesBounds._1) + AxisTaleLength)
+		// Axis X
+		drawLine(g, 0, zeroPosition.y, xAxisLength + 2*AxisTaleLength, zeroPosition.y)
+		drawLine(g, AxisTaleLength + xAxisLength, zeroPosition.y + AxisTaleHeight / 2, xAxisLength + 2*AxisTaleLength, zeroPosition.y)
+		drawLine(g, AxisTaleLength + xAxisLength, zeroPosition.y - AxisTaleHeight / 2, xAxisLength + 2*AxisTaleLength, zeroPosition.y)
+		// Axis Y
+		drawLine(g, zeroPosition.x, 0, zeroPosition.x, yAxisLength + 2*AxisTaleLength)
+		drawLine(g, zeroPosition.x + AxisTaleHeight / 2, AxisTaleLength + yAxisLength, zeroPosition.x, yAxisLength + 2*AxisTaleLength)
+		drawLine(g, zeroPosition.x - AxisTaleHeight / 2, AxisTaleLength + yAxisLength, zeroPosition.x, yAxisLength + 2*AxisTaleLength)
 	}
 
 	private def drawLine(g: Graphics2D, x0: Int, y0: Int, x1: Int, y1: Int) {
