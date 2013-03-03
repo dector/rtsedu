@@ -11,11 +11,11 @@ import UI._
  */
 object App extends SimpleSwingApplication {
 
-	final val xFromTFunc = () => {
+	final val xFromTFunc = (t: Int) => {
 		4
 	}
 
-	final val yFromTFunc = () => {
+	final val yFromTFunc = (t: Int) => {
 		5
 	}
 
