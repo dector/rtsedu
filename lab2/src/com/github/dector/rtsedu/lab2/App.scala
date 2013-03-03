@@ -11,12 +11,12 @@ import UI._
  */
 object App extends SimpleSwingApplication {
 
-	final val xFromTFunc = (t: Int) => {
-		4
+	final val xFromTFunc = (t: Float) => {
+		4f
 	}
 
-	final val yFromTFunc = (t: Int) => {
-		5
+	final val yFromTFunc = (t: Float) => {
+		math.sin(t).toFloat//20f
 	}
 
 	def top = new MainFrame {
