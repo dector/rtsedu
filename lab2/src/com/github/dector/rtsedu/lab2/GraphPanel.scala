@@ -6,7 +6,12 @@ import java.awt.{Color, Point, Rectangle, Graphics2D}
 /**
  * @author dector
  */
-class GraphPanel(val countFunction: (Float) => Float) extends Panel {
+class GraphPanel(
+					val countFunction: (Float) => Float,
+					val tCount: Int,
+					val xValuesBounds: (Int, Int),
+					val yValuesBounds: (Int, Int),
+					val valuesPerAxis: (Int, Int)) extends Panel {
 
 	final val PaddingLeft = 10
 	final val PaddingRight = 10
@@ -36,13 +41,16 @@ class GraphPanel(val countFunction: (Float) => Float) extends Panel {
 
 	val padding = (PaddingTop, PaddingRight, PaddingBottom, PaddingLeft)
 
-	val xValuesBounds = (MinX, MaxX)
-	val yValuesBounds = (MinY, MaxY)
-	val valuesPerAxis = (XValuesPerAxis, YValuesPerAxis)
+//	val xValuesBounds = xValues //(MinX, MaxX)
+//	val yValuesBounds = yValues //(MinY, MaxY)
+//	val valuesPerAxis = (XValuesPerAxis, YValuesPerAxis)
 
-	val tCount = TCount;
+//	val tCount = length;
 
 	val digitPosition = (XDigitsPosition, YDigitsPosition) // -1/1 -> bottom/top | left/right
+
+	val values: Array[Float] = new Array[Float](tCount + 2)
+	var initted = false
 
 	override def paintComponent(g: Graphics2D) {
 		g.setColor(AxisColor)
@@ -94,6 +102,18 @@ class GraphPanel(val countFunction: (Float) => Float) extends Panel {
 		val tStepSize = xAxisLength.toFloat / (tCount + 1)
 		val tStep = (xValuesBounds._2 - xValuesBounds._1).toFloat / (tCount + 1)
 
+		if (! initted) {
+			var i = 0;
+
+			for (t <- xValuesBounds._1.toFloat until (xValuesBounds._2, tStep)) {
+				val f = countFunction(t)
+				values(i) = f
+				i += 1
+			}
+
+			initted = true
+		}
+
 		val graphX = (t: Float) => { (((t - xValuesBounds._1).toFloat / tStep) * tStepSize + AxisTaleLength).toInt }
 		val graphY = (funcRes: Float) => {
 			(zeroPosition.y + funcRes.toFloat *	(if (funcRes > 0)
@@ -102,11 +122,15 @@ class GraphPanel(val countFunction: (Float) => Float) extends Panel {
 
 		val prevPoint = new Point(graphX(xValuesBounds._1), graphY(countFunction(xValuesBounds._1)))
 
+		var i = 0
+
 		for (t <- xValuesBounds._1 + tStep until (xValuesBounds._2, tStep)) {
 			val x = graphX(t)
-			val y = graphY(countFunction(t))
+			val y = graphY(values(i))
 			drawLine(g, prevPoint.x, prevPoint.y, x, y)
 			prevPoint.move(x, y)
+
+			i += 1
 		}
 
 		// TODO Make graph self-scale by y
