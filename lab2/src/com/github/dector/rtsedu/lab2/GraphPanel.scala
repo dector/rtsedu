@@ -12,7 +12,7 @@ class GraphPanel(
 					val countFunction: (Float) => Float,
 					val tCount: Int = 256,
 					val xValuesBounds: (Int, Int) = (0, 256),
-					val yValuesBounds: (Int, Int) = (-50, 50),
+					var yValuesBounds: (Int, Int) = (-50, 50),
 					val valuesPerAxis: (Int, Int) = (20, 10)) extends Panel {
 
 	final val PaddingLeft = 10
@@ -151,7 +151,7 @@ class GraphPanel(
 		drawString(g, dStr, 100, 50)
 	}
 
-	private def drawLine(g: Graphics2D, x0: Int, y0: Int, x1: Int, y1: Int) {
+	protected final def drawLine(g: Graphics2D, x0: Int, y0: Int, x1: Int, y1: Int) {
 		g.drawLine(
 			padding._4 + x0,
 			size.height - padding._3 - y0 - 1,
@@ -160,7 +160,7 @@ class GraphPanel(
 		)
 	}
 
-	private def drawString(g: Graphics2D, s: String, x: Int, y: Int) {
+	protected final def drawString(g: Graphics2D, s: String, x: Int, y: Int) {
 		g.drawString(s, padding._4 + x, size.height - padding._3 - y - 1)
 	}
 

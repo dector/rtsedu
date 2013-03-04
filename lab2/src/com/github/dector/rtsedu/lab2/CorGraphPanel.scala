@@ -1,13 +1,16 @@
 package com.github.dector.rtsedu.lab2
 
-import java.awt.Graphics2D
+import java.awt.{Color, Graphics2D}
 
 /**
  * @author dector
  */
 class CorGraphPanel(val xPage: GraphPanel, val yPage: GraphPanel) extends GraphPanel((_) => 0) {
 
-	override def drawMxAndDValues(g: Graphics2D) {}
+	override def drawMxAndDValues(g: Graphics2D) {
+		g.setColor(Color.BLACK)
+		drawString(g, "f(0) = " + values(0), 100, 70)
+	}
 
 	override def init() {
 		if (! xPage.initted) { xPage.init() }

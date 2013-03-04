@@ -45,13 +45,26 @@ object App extends SimpleSwingApplication {
 
 		menuBar = new MenuBar {
 			contents += new Menu(UI.Actions) {
-				val updateItem = new MenuItem(Action(UI.Update) {
+				contents += new MenuItem(Action(UI.Update) {
 					val page = tabs.selection.page.content.asInstanceOf[GraphPanel]
 
 					page.init()
 					page.repaint()
 				})
-				contents += updateItem
+
+				contents += new MenuItem(Action(UI.ScaleUp) {
+					val page = tabs.selection.page.content.asInstanceOf[GraphPanel]
+
+					page.yValuesBounds = (page.yValuesBounds._1 / 2, page.yValuesBounds._2 / 2)
+					page.repaint()
+				})
+
+				contents += new MenuItem(Action(UI.ScaleDown) {
+					val page = tabs.selection.page.content.asInstanceOf[GraphPanel]
+
+					page.yValuesBounds = (page.yValuesBounds._1 * 2, page.yValuesBounds._2 * 2)
+					page.repaint()
+				})
 			}
 		}
 	}

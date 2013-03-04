@@ -10,6 +10,8 @@ object UI {
 
 	final val Actions = "Actions"
 	final val Update = "Update"
+	final val ScaleUp = "Scale up"
+	final val ScaleDown = "Scale down"
 	final val HeaderX = "x(t)"
 	final val HeaderY = "y(t)"
 	final val HeaderRxx = "Rxx(t)"
