@@ -10,10 +10,10 @@ import swing.event.{Key, KeyPressed, KeyEvent}
  */
 class GraphPanel(
 					val countFunction: (Float) => Float,
-					val tCount: Int,
-					val xValuesBounds: (Int, Int),
-					val yValuesBounds: (Int, Int),
-					val valuesPerAxis: (Int, Int)) extends Panel {
+					val tCount: Int = 256,
+					val xValuesBounds: (Int, Int) = (0, 256),
+					val yValuesBounds: (Int, Int) = (-50, 50),
+					val valuesPerAxis: (Int, Int) = (20, 10)) extends Panel {
 
 	final val PaddingLeft = 10
 	final val PaddingRight = 10
@@ -139,14 +139,16 @@ class GraphPanel(
 			i += 1
 		}
 
+		drawMxAndDValues(g)
+	}
+
+	protected def drawMxAndDValues(g: Graphics2D) {
 		g.setColor(Color.black)
 
 		val mxStr = mx.formatted("mx = %.3f")
 		drawString(g, mxStr, 100, 70)
 		val dStr = d.formatted("D = %.3f")
 		drawString(g, dStr, 100, 50)
-
-		// TODO Make graph self-scale by y
 	}
 
 	private def drawLine(g: Graphics2D, x0: Int, y0: Int, x1: Int, y1: Int) {
@@ -182,10 +184,8 @@ class GraphPanel(
 		val tStep = (xValuesBounds._2 - xValuesBounds._1).toFloat / (tCount + 1)
 
 		var i = 0;
-
 		for (t <- xValuesBounds._1.toFloat until (xValuesBounds._2, tStep)) {
-			val f = countFunction(t)
-			values(i) = f
+			values(i) = countFunction(t)
 			i += 1
 		}
 

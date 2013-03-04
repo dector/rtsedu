@@ -12,4 +12,6 @@ object UI {
 	final val Update = "Update"
 	final val HeaderX = "x(t)"
 	final val HeaderY = "y(t)"
+	final val HeaderRxx = "Rxx(t)"
+	final val HeaderRxy = "Rxy(t)"
 }

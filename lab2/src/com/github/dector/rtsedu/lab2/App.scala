@@ -31,9 +31,13 @@ object App extends SimpleSwingApplication {
 	def top = new MainFrame {
 		title = FrameTitle
 		val tabs = new TabbedPane {
-			pages += new Page(HeaderX, new GraphPanel(rndTFunc, 256, (0, 256), (-50, 50), (20, 10)))
-//			pages += new Page(HeaderX, new GraphPanel(xFromTFunc))
-//			pages += new Page(HeaderY, new GraphPanel(yFromTFunc))
+			val xGraphPanel = new GraphPanel(rndTFunc)
+			val yGraphPanel = new GraphPanel(rndTFunc)
+
+			pages += new Page(HeaderX, xGraphPanel)
+			pages += new Page(HeaderY, yGraphPanel)
+			pages += new Page(HeaderRxx, new CorGraphPanel(xGraphPanel, xGraphPanel))
+			pages += new Page(HeaderRxy, new CorGraphPanel(xGraphPanel, yGraphPanel))
 		}
 
 		contents = tabs
