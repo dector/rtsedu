@@ -1,8 +1,9 @@
 package com.github.dector.rtsedu.lab2
 
-import swing.{TabbedPane, MainFrame, SimpleSwingApplication}
+import swing._
 import java.awt.Dimension
 import swing.TabbedPane.Page
+import swing.event.Key
 
 import UI._
 
@@ -29,11 +30,25 @@ object App extends SimpleSwingApplication {
 
 	def top = new MainFrame {
 		title = FrameTitle
-		contents = new TabbedPane {
+		val tabs = new TabbedPane {
 			pages += new Page(HeaderX, new GraphPanel(rndTFunc, 256, (0, 256), (-50, 50), (20, 10)))
 //			pages += new Page(HeaderX, new GraphPanel(xFromTFunc))
 //			pages += new Page(HeaderY, new GraphPanel(yFromTFunc))
 		}
+
+		contents = tabs
 		size = new Dimension(FrameWidth, FrameHeight)
+
+		menuBar = new MenuBar {
+			contents += new Menu(UI.Actions) {
+				val updateItem = new MenuItem(Action(UI.Update) {
+					val page = tabs.selection.page.content.asInstanceOf[GraphPanel]
+
+					page.init()
+					page.repaint()
+				})
+				contents += updateItem
+			}
+		}
 	}
 }

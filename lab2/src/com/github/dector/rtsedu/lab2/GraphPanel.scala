@@ -2,6 +2,8 @@ package com.github.dector.rtsedu.lab2
 
 import swing.Panel
 import java.awt.{Color, Point, Rectangle, Graphics2D}
+import javax.swing.text.JTextComponent
+import swing.event.{Key, KeyPressed, KeyEvent}
 
 /**
  * @author dector
@@ -50,7 +52,20 @@ class GraphPanel(
 	val digitPosition = (XDigitsPosition, YDigitsPosition) // -1/1 -> bottom/top | left/right
 
 	val values: Array[Float] = new Array[Float](tCount + 2)
+	var mx = 0f
+	var d = 0f
 	var initted = false
+
+	listenTo(keys)
+	reactions += {
+		case key: KeyEvent => if (key.peer == java.awt.event.KeyEvent.VK_F5) {
+			init()
+			repaint()
+			println("test")
+		}
+	}
+	focusable = true
+	requestFocus()
 
 	override def paintComponent(g: Graphics2D) {
 		g.setColor(AxisColor)
@@ -103,15 +118,7 @@ class GraphPanel(
 		val tStep = (xValuesBounds._2 - xValuesBounds._1).toFloat / (tCount + 1)
 
 		if (! initted) {
-			var i = 0;
-
-			for (t <- xValuesBounds._1.toFloat until (xValuesBounds._2, tStep)) {
-				val f = countFunction(t)
-				values(i) = f
-				i += 1
-			}
-
-			initted = true
+			init()
 		}
 
 		val graphX = (t: Float) => { (((t - xValuesBounds._1).toFloat / tStep) * tStepSize + AxisTaleLength).toInt }
@@ -120,10 +127,9 @@ class GraphPanel(
 				positiveResLength.toFloat / yValuesBounds._2 else negativeResLength.toFloat / yValuesBounds._1)).toInt
 		}
 
-		val prevPoint = new Point(graphX(xValuesBounds._1), graphY(countFunction(xValuesBounds._1)))
+		val prevPoint = new Point(graphX(xValuesBounds._1), graphY(values(xValuesBounds._1)))
 
 		var i = 0
-
 		for (t <- xValuesBounds._1 + tStep until (xValuesBounds._2, tStep)) {
 			val x = graphX(t)
 			val y = graphY(values(i))
@@ -132,6 +138,13 @@ class GraphPanel(
 
 			i += 1
 		}
+
+		g.setColor(Color.black)
+
+		val mxStr = mx.formatted("mx = %.3f")
+		drawString(g, mxStr, 100, 70)
+		val dStr = d.formatted("D = %.3f")
+		drawString(g, dStr, 100, 50)
 
 		// TODO Make graph self-scale by y
 	}
@@ -147,5 +160,38 @@ class GraphPanel(
 
 	private def drawString(g: Graphics2D, s: String, x: Int, y: Int) {
 		g.drawString(s, padding._4 + x, size.height - padding._3 - y - 1)
+	}
+
+	private def countMx(values: Array[Float], t0: Int, t1: Int): Float = {
+		var mx = values(t0)
+		for (i <- t0 + 1 to t1) {
+			mx += values(i)
+		}
+		mx / (t1 - t0)
+	}
+
+	private def countD(values: Array[Float], t0: Int, t1: Int, mx: Float): Float = {
+		var d = 0f
+		for (i <- t0 to t1) {
+			d += math.pow(values(i) - mx, 2).toFloat
+		}
+		d / (t1 - t0)
+	}
+
+	def init() {
+		val tStep = (xValuesBounds._2 - xValuesBounds._1).toFloat / (tCount + 1)
+
+		var i = 0;
+
+		for (t <- xValuesBounds._1.toFloat until (xValuesBounds._2, tStep)) {
+			val f = countFunction(t)
+			values(i) = f
+			i += 1
+		}
+
+		mx = countMx(values, 0, tCount)
+		d = countD(values, 0, tCount, mx)
+
+		initted = true
 	}
 }

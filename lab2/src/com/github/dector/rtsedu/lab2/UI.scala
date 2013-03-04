@@ -8,6 +8,8 @@ object UI {
 	final val FrameWidth = 800
 	final val FrameHeight = 600
 
+	final val Actions = "Actions"
+	final val Update = "Update"
 	final val HeaderX = "x(t)"
 	final val HeaderY = "y(t)"
 }
